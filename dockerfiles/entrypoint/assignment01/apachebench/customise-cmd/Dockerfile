@@ -6,6 +6,6 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-CMD [ "-n", "10", "-c", "2", "https://www.bretfisher.com/" ]
-
 ENTRYPOINT [ "ab" ]
+
+CMD [ "--help" ]

@@ -28,7 +28,7 @@ fi
 # NOTE: this is not used for this Python app, but it's a good example of how to do it with envsubst
 
 if [ -f "/app/data/config.json" ]; then
-    envsubst < /app/data/config.json > /app/data/config.json.tmp
+    envsubst </app/data/config.json >/app/data/config.json.tmp
     mv /app/data/config.json.tmp /app/data/config.json
 fi
 
