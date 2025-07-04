@@ -1,1 +1,48 @@
-# create your drupal and postgres config here, based off the last assignment
+services:
+  # docker container run --name drupal -p 8080:80 -v (for all volumes) --network drupal-server-net (drupal-image)
+  drupal:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: drupal-custom
+    ports:
+      - 8070:80
+    volumes:
+      # these are gotten from the image documentation for the defined volumes
+      - drupal-modules:/var/www/html/modules
+      - drupal-profiles:/var/www/html/profiles
+      - drupal-sites:/var/www/html/sites
+      - drupal-themes:/var/www/html/themes
+    networks:
+      - drupal-server-net
+
+  mariadb:
+    image: mariadb:10.11
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MARIADB_ROOT_PASSWORD: password
+      MARIADB_USER: drupal-admin
+      MARIADB_DATABASE: drupal
+    volumes:
+      - drupal-data:/var/lib/mysql
+    networks:
+      - drupal-server-net
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8090:8080
+
+networks:
+  drupal-server-net:
+    driver: bridge
+
+volumes:
+  drupal-modules:
+  drupal-profiles:
+  drupal-sites:
+  drupal-themes:
+  drupal-data:
