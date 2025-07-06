@@ -1,0 +1,61 @@
+services:
+  drupal:
+    image: drupal:8.2
+    ports:
+      - 8070:80
+    volumes:
+      - drupal-modules:/var/www/html/modules
+      - drupal-profiles:/var/www/html/profiles
+      - drupal-sites:/var/www/html/sites
+      - drupal-themes:/var/www/html/themes
+    networks:
+      - drupal-server-net
+    deploy:
+      replicas: 3
+
+  mariadb:
+    image: mariadb:10.11
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MARIADB_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+      MARIADB_USER_FILE: /run/secrets/db_admin
+      MARIADB_DATABASE_FILE: /run/secrets/db_name
+    volumes:
+      - drupal-data:/var/lib/mysql
+    secrets:
+      - db_root_password
+      - db_admin
+      - db_name
+    networks:
+      - drupal-server-net
+    deploy:
+      replicas: 1
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8090:8080
+    deploy:
+      replicas: 2
+
+networks:
+  drupal-server-net:
+    driver: overlay
+
+volumes:
+  drupal-modules:
+  drupal-profiles:
+  drupal-sites:
+  drupal-themes:
+  drupal-data:
+
+secrets:
+  db_root_password:
+    external: true
+  db_admin:
+    external: true
+  db_name:
+    external: true
