@@ -8,4 +8,8 @@ RUN apt-get update && \
 
 CMD [ "-n", "10", "-c", "2", "https://www.bretfisher.com/" ]
 
+# adding healthcheck
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD [ "-n", "1", "-c", "1", "https://www.google.com/" ] || exit 1
+
 ENTRYPOINT [ "ab" ]
